@@ -31,7 +31,8 @@ This is beta code.
 	* **Read-write**: peer discovery and registration of a hazelcast instance (self registration)
 	* **Read-only**: peer discovery only with an manual Etcd key-path setup (no registration by the strategy itself)
 
-* If you don't want to use the built in Etcd registration, just specify the `DoNothingRegistrator` (see below) in your hazelcast discovery-strategy XML config. This will require you to manually create node key-paths against Etcd defines the hazelcast service.
+* If you don't want to use the built in Etcd registration, just specify the `DoNothingRegistrator` (see below) in your hazelcast discovery-strategy XML config. This will require you to manually create node key-paths against Etcd defines the hazelcast service; in the format
+`/[etcd-service-name]/[hz-instance-id] = { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}` where `hz-instance-id` can be anything but should be unique. `etcd-service-name` must match the value of the `<etcd-service-name>` in your hazelcast XML config for this discovery strategy.
 
 * If using self-registration, either `LocalDiscoveryNodeRegistrator` or `ExplicitIpPortRegistrator` which additionally support:
     * Automatic registration of the hazelcast instance with Etcd
