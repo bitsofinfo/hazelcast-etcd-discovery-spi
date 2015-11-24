@@ -1,0 +1,24 @@
+
+apply plugin: 'java'
+
+group = 'org.bitsofinfo'
+version = '1.0.0'
+
+description = """hazelcast-etcd-discovery-spi"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+   jcenter()
+}
+
+dependencies {
+
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6-EA'
+    compile group: 'org.mousio', name: 'etcd4j', version:'2.7.0'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
+    
+    testCompile 'junit:junit:4.12'
+    
+}

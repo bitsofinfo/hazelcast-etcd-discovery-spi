@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast id="hazelcast-etcd-discovery" 
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <group>
+        <name>hazelcast-etcd-discovery-spi</name>
+        <password>haz3lcast1</password>
+    </group>
+
+    <properties>
+        <property name="hazelcast.discovery.enabled">true</property>
+        <property name="hazelcast.shutdownhook.enabled">false</property> 
+    </properties>
+
+    <network>
+        <port auto-increment="true">5701</port>
+        
+        <join>
+            <multicast enabled="false"/>
+              <aws enabled="false"/>
+              <tcp-ip enabled="false" />
+              
+              <!-- Enable a Etcd based discovery strategy -->
+             <discovery-strategies>
+        
+               <discovery-strategy enabled="true"
+                   class="org.bitsofinfo.hazelcast.discovery.etcd.EtcdDiscoveryStrategy">
+        
+                 <properties>
+                       <!--  
+                       	   Comma separated list of URIs for etcd hosts to connect to 
+                       	   (one or more required) FORMAT: http[s]://[ip | hostname]:[port],...
+                       	   All must be HTTPS or HTTP (NOT intermixed) 
+                       -->
+                      <property name="etcd-uris">http://localhost:4001</property>
+                      
+                      <!-- 
+                          The root hazelcast cluster name "/key" by which all nodes
+                          entries exist under in the form /[etcd-service-name]/[hz-instance-id]
+                          	= value { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}
+                       -->
+                      <property name="etcd-service-name">hz-discovery-test-cluster</property>
+                                            
+                      <!--  
+                              If you quickly start an entire hz cluster at the exact same time, and
+                              all hazelcast nodes are registered with Etcd at the same time, its 
+                              possible they may all discover ONLY themselves as members, leading to a cluster
+                              that can never be fully discovered. This small delay can assist with avoiding 
+                              that problem. @see https://github.com/hazelcast/hazelcast/issues/6813 
+                       -->
+                      <property name="etcd-discovery-delay-ms">10000</property>
+                      
+                      
+                      <!-- 
+                            EtcdRegistrator: 
+                            
+                            This (optionally) enables the DiscoveryStrategy to register this hazelcast instance with Etcd 
+                            directly and deregister it on shutdown.
+                            
+                            LocalDiscoveryNodeRegistrator: Uses the private/public IP:PORT determined by this Hazelcast instance
+                                                             (and tags above) as the identifiers for registering itself with Etcd
+                                                             as a unique node.
+                                                             
+                            ExplicitIpPortRegistrator: Uses an explicit IP:PORT specified by you in the 'etcd-registrator-config' below
+                                                             (and tags above) as the identifiers for registering itself with Etcd
+                                                             as a unique node.
+                                                             
+                            DoNothingRegistrator: Does NOTHING in regards to registration or deregistration of this node as a service
+                                                  with Etcd. This should be used if you are registering your nodes with Etcd yourself and 
+                                                  managing the registration of this Hazelcast node manually. In the format:
+                                                  
+                                                  /[etcd-service-name]/[hz-instance-id] = { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}
+                                                  
+                            
+                       -->
+                      <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.LocalDiscoveryNodeRegistrator</property>
+                      
+                      <!-- Custom properties for the EtcdRegistrator class you are using, JSON. @see EtcdRegistrator implementation
+                           class for details on the configuration unique to it. 
+                           
+                           The configuration below is for LocalDiscoveryNodeRegistrator:
+                           
+                                    - preferPublicAddress (true|false) : use the public IP determined by
+                                                                         hazelcast (if not null) over the private IP
+                     -->
+                      <property name="etcd-registrator-config"><![CDATA[
+                                                                      {
+                                                                        "preferPublicAddress":false
+                                                                      }
+                                                                  ]]></property>
+                                                                  
+                                                                  
+                                                                  
+                      <!-- The configuration below is for ExplicitIpPortRegistrator:
+                           
+                                    - registerWithIpAddress: register with this IP in Etcd
+                                    
+                                    - registerWithPort: register with this PORT in Etcd
+                     
+                      <property name="etcd-registrator-config"><![CDATA[
+                                                                      {
+                                                                        "registerWithIpAddress":"192.168.0.208",
+                                                                        "registerWithPort":5701
+                                                                      }
+                                                                  ]]></property>
+                     -->
+                     
+                     
+                 </properties>
+               </discovery-strategy>
+             </discovery-strategies>
+              
+        </join>
+    </network>
+</hazelcast>

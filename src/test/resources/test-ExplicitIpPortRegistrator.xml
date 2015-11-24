@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast id="hazelcast-etcd-discovery" 
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.6.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+           
+    <!-- 
+     #####################
+      IMPORTANT: @see src/main/resources/hazelcast-etcd-discovery-spi-example.xml
+      For documentation on the discovery-strategy properties and their usage
+     #####################
+     -->
+    <group>
+        <name>test-LocalDiscoveryNodeRegistrator</name>
+        <password>haz3lcast1</password>
+    </group>
+
+    <properties>
+        <property name="hazelcast.discovery.enabled">true</property>
+        <property name="hazelcast.shutdownhook.enabled">false</property> 
+    </properties>
+
+    <network>
+        <port auto-increment="true">5701</port>
+        
+        <join>
+            <multicast enabled="false"/>
+              <aws enabled="false"/>
+              <tcp-ip enabled="false" />
+              
+             <discovery-strategies>
+        
+               <discovery-strategy enabled="true"
+                   class="org.bitsofinfo.hazelcast.discovery.etcd.EtcdDiscoveryStrategy">
+        
+                 <properties>
+                      <property name="etcd-uris">http://localhost:4001</property>
+                      <property name="etcd-service-name">test-ExplicitIpPortRegistrator</property>
+                      <property name="etcd-discovery-delay-ms">10000</property>
+
+                      <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.ExplicitIpPortRegistrator</property>
+                      <property name="etcd-registrator-config"><![CDATA[
+                                                                      {
+                                                                        "registerWithIpAddress":"${registerWithIp}",
+                        												"registerWithPort":${registerWithPort}
+                                                                      }
+                                                                  ]]></property>
+                 </properties>
+               </discovery-strategy>
+             </discovery-strategies>
+              
+        </join>
+    </network>
+</hazelcast>
