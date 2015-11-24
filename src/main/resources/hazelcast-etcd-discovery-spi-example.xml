@@ -72,6 +72,8 @@
                                                   
                                                   /[etcd-service-name]/[hz-instance-id] = { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}
                                                   
+                                                  Note: hz-instance-id can be anything, but needs to be unique...
+                                                  
                             
                        -->
                       <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.LocalDiscoveryNodeRegistrator</property>
