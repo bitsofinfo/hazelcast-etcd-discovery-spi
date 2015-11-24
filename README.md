@@ -36,7 +36,7 @@ This is beta code.
 
 * If using self-registration, either `LocalDiscoveryNodeRegistrator` or `ExplicitIpPortRegistrator` which additionally support:
     * Automatic registration of the hazelcast instance with Etcd
-    * Control which IP is published as the service-address with Etcd
+    * Control which IP/PORT is published for the hazelcast node in Etcd
     * Configurable discovery delay
     * Automatic Etcd de-registration of instance via ShutdownHook
 
