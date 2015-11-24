@@ -9,7 +9,6 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 * [Build/Usage](#usage)
 * [Unit tests](#tests)
 * [Related Info](#related)
-* [Todo](#todo)
 * [Notes](#notes)
 * [Docker info](#docker)
 
