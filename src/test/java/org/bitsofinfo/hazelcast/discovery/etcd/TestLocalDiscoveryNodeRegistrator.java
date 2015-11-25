@@ -20,7 +20,7 @@ public class TestLocalDiscoveryNodeRegistrator extends RegistratorTestBase {
 	}
 
 	@Override
-	protected void preConstructHazelcast(int instanceNumber) {
+	protected void preConstructHazelcast(int instanceNumber) throws Exception {
 		// we do nothing
 	}
 	

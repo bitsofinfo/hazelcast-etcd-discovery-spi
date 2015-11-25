@@ -36,7 +36,7 @@ public class ExplicitIpPortRegistrator extends BaseRegistrator {
 	public Address determineMyLocalAddress(DiscoveryNode localDiscoveryNode, Map<String, Object> registratorConfig) throws Exception {
 
 		String registerWithIpAddress = (String)registratorConfig.get(CONFIG_PROP_REGISTER_WITH_IP_ADDRESS);
-		Integer registerWithPort = (Integer)registratorConfig.get(CONFIG_PROP_REGISTER_WITH_PORT);
+		Integer registerWithPort = ((Double)registratorConfig.get(CONFIG_PROP_REGISTER_WITH_PORT)).intValue();
 		
 		logger.info("Registrator config properties: " + CONFIG_PROP_REGISTER_WITH_IP_ADDRESS +":"+registerWithIpAddress 
 											    + " " +  CONFIG_PROP_REGISTER_WITH_PORT + ":" + registerWithPort +

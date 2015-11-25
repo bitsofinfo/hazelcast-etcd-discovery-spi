@@ -1,6 +1,8 @@
 package org.bitsofinfo.hazelcast.discovery.etcd;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,9 +30,9 @@ import mousio.etcd4j.responses.EtcdKeysResponse;
 public abstract class RegistratorTestBase {
 	
 	public static final String ETCD_HOST = "localhost";
-	public static final int ETCD_PORT = 8500;
+	public static final int ETCD_PORT = 4001;
 	
-	protected abstract void preConstructHazelcast(int instanceNumber);
+	protected abstract void preConstructHazelcast(int instanceNumber) throws Exception;
 
 	protected void testRegistrator(String hazelcastConfigXmlFilename, String serviceName) {
 		EtcdClient etcdClient = null;
@@ -96,10 +98,10 @@ public abstract class RegistratorTestBase {
 			HazelcastInstanceMgr deadInstance = instances.iterator().next();
 			deadInstance.shutdown();
 			
-			//  total -1 now...
+			//  total is the SAME (because the shutdown above does not invoke the discovery strategies shutdown hook)
 			EtcdKeysResponse dirResp2 = etcdClient.getDir(serviceName)
 									.timeout(10, TimeUnit.SECONDS).recursive().send().get();
-			Assert.assertEquals((totalInstancesToTest-1),dirResp2.node.nodes.size());
+			Assert.assertEquals((totalInstancesToTest),dirResp2.node.nodes.size());
 			
 			// pick a random instance, add some entries in map, verify
 			instances.get(rand.nextInt(instances.size()-1)).getInstance().getMap("testMap2").put("extra1", "extra1");
@@ -154,5 +156,14 @@ public abstract class RegistratorTestBase {
 			return this.hazelcastInstance.getCluster().getLocalMember().getAddress();
 		}
 		
+	}
+	
+	protected String determineIpAddress() throws Exception {
+	
+		InetAddress addr = InetAddress.getLocalHost();
+		String ipAdd = addr.getHostAddress();
+		
+		return ipAdd;
+
 	}
 }

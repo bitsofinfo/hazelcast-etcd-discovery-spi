@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
 import com.hazelcast.spi.discovery.DiscoveryNode;
@@ -104,7 +105,8 @@ public abstract class BaseRegistrator implements EtcdRegistrator {
 								  						   this.myLocalAddress.getHost());
 			
 			// put it
-			EtcdKeysResponse response = etcdClient.put(this.myEtcdKey, new Gson().toJson(node)).send().get();
+			EtcdKeysResponse response = etcdClient.put(this.myEtcdKey, 
+					new GsonBuilder().setDateFormat(EtcdDiscoveryStrategy.DATE_PATTERN).create().toJson(node)).send().get();
 			
 			this.logger.info("Registered with Etcd["+etcdUriStrings+"] response=" + response.toString() + ", key: " + this.myEtcdKey);
 			

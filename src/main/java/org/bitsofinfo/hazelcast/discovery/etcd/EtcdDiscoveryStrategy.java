@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.nio.Address;
@@ -27,6 +28,8 @@ import mousio.etcd4j.responses.EtcdKeysResponse.EtcdNode;
  *
  */
 public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements Runnable {
+	
+	public static final String DATE_PATTERN = "yyyy.MM.dd HH:mm:ss.SSS Z";
 
 	// how we connect to etcd
 	private String etcdUrisString;  
@@ -140,7 +143,7 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 		try {
 			etcdClient = getEtcdClient(this.etcdUris);
 			
-			Gson gson = new Gson();
+			Gson gson = new GsonBuilder().setDateFormat(DATE_PATTERN).create();
 			
 			// discover all nodes under key /[etcdServiceName
 			EtcdKeysResponse dirResp = etcdClient.getDir(this.etcdServiceName)

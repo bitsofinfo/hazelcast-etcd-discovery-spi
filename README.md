@@ -30,11 +30,12 @@ This is beta code.
 	* **Read-write**: peer discovery and registration of a hazelcast instance (self registration)
 	* **Read-only**: peer discovery only with an manual Etcd key-path setup (no registration by the strategy itself)
 
-* If you don't want to use the built in Etcd registration, just specify the `DoNothingRegistrator` (see below) in your hazelcast discovery-strategy XML config. This will require you to manually create node key-paths against Etcd defines the hazelcast service; in the format
-`/[etcd-service-name]/[hz-instance-id] = { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}` where `hz-instance-id` can be anything but should be unique. `etcd-service-name` must match the value of the `<etcd-service-name>` in your hazelcast XML config for this discovery strategy.
+* If you don't want to use the built in Etcd registration, just specify the `DoNothingRegistrator` (see below) in your hazelcast discovery-strategy XML config. This will require you to manually create node key-paths against Etcd that defines the hazelcast service; in the format:
+	* `/[etcd-service-name]/[hz-instance-id] = {"ip":"xx.xx.xx.xx", "hostname":"my.host", "port":5701}` where `hz-instance-id` can be anything but must be unique. 
+	* `etcd-service-name` must match the value of the `<etcd-service-name>` in your hazelcast XML config for this discovery strategy.
 
 * If using self-registration, either `LocalDiscoveryNodeRegistrator` or `ExplicitIpPortRegistrator` which additionally support:
-    * Automatic registration of the hazelcast instance with Etcd
+    * Automatic registration of the hazelcast instance with Etcd (under `<etcd-service-name>` key)
     * Control which IP/PORT is published for the hazelcast node in Etcd
     * Configurable discovery delay
     * Automatic Etcd de-registration of instance via ShutdownHook
@@ -97,7 +98,7 @@ $ ./etcdctl ls hz-discovery-test-cluster
 /hz-discovery-test-cluster/hz-discovery-test-cluster-192.168.0.208-192.168.0.208-5701
 
 $ ./etcdctl get /hz-discovery-test-cluster/hz-discovery-test-cluster-192.168.0.208-192.168.0.208-5701
-{"ip":"192.168.0.208","port":5701,"hostname":"192.168.0.208"}
+{"ip":"192.168.0.208","port":5702,"hostname":"192.168.0.208","registeredAt":"2015.11.25 14:25:59.026 +0000"}
 ```
 
 
