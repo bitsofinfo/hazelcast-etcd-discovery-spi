@@ -35,9 +35,19 @@ public class TestDoNothingRegistrator {
 	 * IMPORTANT:
 	 * 
 	 * Prior to this test you must register Etcd key paths with 
-	 * 	/test-DoNothingRegistrator/test-DoNothingRegistrator-[ip]-[ip]-570[1-5]
+	 * 	/test-DoNothingRegistrator/[anything-unique-per-node]
+	 * 
+	 * With values: {"ip":"IP","port":570[1-5],"hostname":"IP"}
+	 * 
+	 * EXAMPLE manual registry of kv paths for this test 
+	 * 
+	 * ./etcdctl set /test-DoNothingRegistrator/node1 '{"ip":"127.0.0.1","port":5701,"hostname":"127.0.0.1"}'
+	 * ./etcdctl set /test-DoNothingRegistrator/node2 '{"ip":"127.0.0.1","port":5702,"hostname":"127.0.0.1"}'
+	 * ./etcdctl set /test-DoNothingRegistrator/node3 '{"ip":"127.0.0.1","port":5703,"hostname":"127.0.0.1"}'
+	 * ./etcdctl set /test-DoNothingRegistrator/node4 '{"ip":"127.0.0.1","port":5704,"hostname":"127.0.0.1"}'
+	 * ./etcdctl set /test-DoNothingRegistrator/node5 '{"ip":"127.0.0.1","port":5705,"hostname":"127.0.0.1"}'
 	 *
-	 * 5 nodes/instances, and corresponding ports from 5701-5705 (same ip, your local ip)
+	 * 5 nodes/instances, and corresponding ports from 5701-5705 (same ip, your local ip, localhost)
 	 * 
 	 * This will startup etcd appropriately for this test to work.
 	 * 

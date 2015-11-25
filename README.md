@@ -113,6 +113,7 @@ you to setup your local Etcd and edit certain files.
 * https://github.com/coreos/etcd
 * https://github.com/jurmous/etcd4j
 * http://docs.hazelcast.org/docs/3.6-EA/manual/html-single/index.html#discovery-spi
+* **Consul** version of this: https://github.com/bitsofinfo/hazelcast-consul-discovery-spi
 
 ## <a id="notes"></a> Notes
 
