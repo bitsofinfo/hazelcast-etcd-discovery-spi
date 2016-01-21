@@ -1,24 +1,66 @@
+buildscript {
+	repositories {
+    	jcenter()
+    }
+}
 
-apply plugin: 'java'
+plugins {
+    id "com.jfrog.bintray" version "1.5"
+}
 
 group = 'org.bitsofinfo'
-version = '1.0.0'
 
-description = """hazelcast-etcd-discovery-spi"""
+allprojects {
+	repositories {
+		jcenter()
+	}
+	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	apply plugin: 'java'
+}
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
-repositories {
-   jcenter()
-}
-
 dependencies {
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6-EA'
-    compile group: 'org.mousio', name: 'etcd4j', version:'2.7.0'
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6-RC1'
+    compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
     
     testCompile 'junit:junit:4.12'
-    
 }
+
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('bintrayUser')
+	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('bintrayApiKey')
+    publications = ['hazelcastEtcdDiscoverySpi'] 
+    pkg {
+        repo = 'maven'
+        name = 'hazelcast-etcd-discovery-spi'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi'
+        publicDownloadNumbers = true
+        version {
+		    name = project.property('version')
+		    desc = project.property('version') + " : " + project.property('description')
+		    released  = new Date()
+		    vcsTag = project.property('version')
+		}
+    }
+}
+
+publishing {
+    publications {
+        hazelcastEtcdDiscoverySpi(MavenPublication) {
+            from components.java
+            groupId project.property('group')
+            artifactId 'hazelcast-etcd-discovery-spi'
+            version project.property('version')
+        }
+    }
+}
+
+    
+
+

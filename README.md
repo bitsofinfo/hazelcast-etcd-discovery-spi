@@ -1,14 +1,18 @@
 # hazelcast-etcd-discovery-spi
 
-Provides a Etcd based discovery strategy for Hazlecast 3.6-EA+ enabled applications.
+Provides a Etcd based discovery strategy for Hazlecast 3.6-RC1+ enabled applications.
 This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will optionally register each of your Hazelcast instances with Etcd and enable Hazelcast nodes to dynamically discover one another via Etcd.
 
 * [Status](#status)
+* [Releases](#releases)
 * [Requirements](#requirements)
+* [Maven/Gradle install](#mavengradle)
 * [Features](#features)
-* [Build/Usage](#usage)
+* [Usage](#usage)
+* [Build from source](#building)
 * [Unit tests](#tests)
 * [Related Info](#related)
+* [Todo](#todo)
 * [Notes](#notes)
 * [Docker info](#docker)
 
@@ -16,13 +20,56 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 ## <a id="status"></a>Status
 
-This is beta code.
+This is beta code, tested against Hazelcast 3.6-EA and 3.6-RC1
+
+## <a id="releases"></a>Releases
+
+* [1.0-RC1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC1): Tested against Hazelcast 3.6-EA and 3.6-RC1
 
 ## <a id="requirements"></a>Requirements
 
 * Java 6+
-* [Hazelcast 3.6-EA+](https://hazelcast.org/)
+* [Hazelcast 3.6-RC1+](https://hazelcast.org/)
 * [Etcd](https://github.com/coreos/etcd)
+
+## <a id="mavengradle"></a>Maven/Gradle
+
+To use this discovery strategy in your Maven or Gradle project use the dependency samples below.
+
+### Gradle:
+
+```
+repositories {
+    jcenter() 
+}
+
+dependencies {
+	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC1'
+}
+```
+
+### Maven:
+
+```
+<dependencies>
+    <dependency>
+        <groupId>org.bitsofinfo</groupId>
+        <artifactId>hazelcast-etcd-discovery-spi</artifactId>
+        <version>1.0-RC1</version>
+    </dependency>
+</dependencies>
+
+<repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>bintray</name>
+        <url>http://jcenter.bintray.com</url>
+    </repository>
+</repositories>
+```
 
 ## <a id="features"></a>Features
 
@@ -40,23 +87,15 @@ This is beta code.
     * Control which IP/PORT is published for the hazelcast node in Etcd
     * Configurable discovery delay
     * Automatic Etcd de-registration of instance via ShutdownHook
+    
+## <a id="usage"></a>Usage
 
-## <a id="usage"></a>Build & Usage
+* Ensure your project has the `hazelcast-etcd-discovery-spi` artifact dependency declared in your maven pom or gradle build file as described above. Or build the jar yourself and ensure the jar is in your project's classpath.
 
 * Have Etcd running and available somewhere on your network, start it such as:
 ```
 ./etcd
 ```
-* From the root of this project, build a Jar : `./gradlew assemble`
-
-* Include the built jar artifact located at `build/libs/hazelcast-etcd-discovery-spi-1.0.0.jar` in your hazelcast project
-
-* If not already present in your hazelcast application's Maven (pom.xml) or Gradle (build.gradle) dependencies section; ensure that these dependencies are present (versions may vary as appropriate):
-
-```
-compile group: 'org.mousio', name: 'etcd4j', version:'2.7.0'
-compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
-``` 
 
 * Configure your hazelcast.xml configuration file to use the `EtcdDiscoveryStrategy` (similar to the below): [See hazelcast-etcd-discovery-spi-example.xml](src/main/resources/hazelcast-etcd-discovery-spi-example.xml) for a full example with documentation of options.
 
@@ -103,17 +142,31 @@ $ ./etcdctl get /hz-discovery-test-cluster/hz-discovery-test-cluster-192.168.0.2
 ```
 
 
+## <a id="building"></a>Build from source
+
+* From the root of this project, build a Jar : `./gradlew assemble`
+
+* Include the built jar artifact located at `build/libs/hazelcast-etcd-discovery-spi-[VERSION].jar` in your hazelcast project
+
+* If not already present in your hazelcast application's Maven (pom.xml) or Gradle (build.gradle) dependencies section; ensure that these dependencies are present (versions may vary as appropriate):
+
+```
+compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
+compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
+``` 
+
+
 ## <a id="tests"></a>Unit-tests
 
 It may also help you to understand the functionality by checking out and running the unit-tests
-located at [src/test/java](src/test/java). Be sure to read the comments as some of the tests require
+located at [src/test/java](src/test/java). **BE SURE TO READ** the comments as some of the tests require
 you to setup your local Etcd and edit certain files.
 
 ## <a id="related"></a>Related info
 
 * https://github.com/coreos/etcd
 * https://github.com/jurmous/etcd4j
-* http://docs.hazelcast.org/docs/3.6-EA/manual/html-single/index.html#discovery-spi
+* http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#discovery-spi
 * **Consul** version of this: https://github.com/bitsofinfo/hazelcast-consul-discovery-spi
 
 ## <a id="notes"></a> Notes
@@ -125,7 +178,7 @@ that would need to automatically register themselves with Etcd for higher level 
 
 If you are deploying your Hazelcast application as a Docker container, one helpful tip is that you will want to avoid hardwired
 configuration in the hazelcast XML config, but rather have your Docker container take startup arguments that would be translated
-to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6-EA/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6-EA/manual/html-single/index.html#using-variables) 
+to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#using-variables) 
 
 Specifically when using this discovery strategy and Docker, it may be useful for you to use the [ExplicitIpPortRegistrator](src/main/java/org/bitsofinfo/hazelcast/discovery/etcd/ExplicitIpPortRegistrator.java) `EtcdRegistrator` **instead** of the *LocalDiscoveryNodeRegistrator* as the latter relies on hazelcast to determine its IP/PORT and this may end up being the local container IP, and not the Docker host IP, leading to a situation where a unreachable IP/PORT combination is published to Etcd.
 
