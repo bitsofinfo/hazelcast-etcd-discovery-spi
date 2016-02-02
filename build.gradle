@@ -24,7 +24,7 @@ targetCompatibility = 1.6
 
 dependencies {
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6-RC1'
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6'
     compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
     
@@ -66,6 +66,26 @@ publishing {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+
+task runTests(type: Test) {
+	description 'Runs unit tests for all tests except TestDoNothingRegistrator.'
+  	
+  	//Always run tests even when up-to-date 
+  	outputs.upToDateWhen { 
+  		false 
+  	}
+	
+	//Exclude TestDoNothingRegistrator test because it requires special setup 
+    exclude "**/TestDoNothingRegistrator.class"
+}
+
+runTests {
+    testLogging {
+        // Show that tests are run in the command-line output
+        events 'started', 'passed'
+    }
 }
 
 artifacts {

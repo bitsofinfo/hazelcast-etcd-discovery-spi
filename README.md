@@ -1,6 +1,6 @@
 # hazelcast-etcd-discovery-spi
 
-Provides a Etcd based discovery strategy for Hazlecast 3.6-RC1+ enabled applications.
+Provides a Etcd based discovery strategy for Hazlecast 3.6+ enabled applications.
 This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will optionally register each of your Hazelcast instances with Etcd and enable Hazelcast nodes to dynamically discover one another via Etcd.
 
 * [Status](#status)
@@ -20,16 +20,18 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 ## <a id="status"></a>Status
 
-This is beta code, tested against Hazelcast 3.6-EA and 3.6-RC1
+This is beta code, tested against Hazelcast 3.6-EA+ through 3.6 stable
 
 ## <a id="releases"></a>Releases
+
+* [1.0-RC2](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC2): Tested against Hazelcast 3.6-EA through 3.6 stable
 
 * [1.0-RC1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC1): Tested against Hazelcast 3.6-EA and 3.6-RC1
 
 ## <a id="requirements"></a>Requirements
 
 * Java 6+
-* [Hazelcast 3.6-RC1+](https://hazelcast.org/)
+* [Hazelcast 3.6+](https://hazelcast.org/)
 * [Etcd](https://github.com/coreos/etcd)
 
 ## <a id="mavengradle"></a>Maven/Gradle
@@ -44,7 +46,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC1'
+	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC2'
 }
 ```
 
@@ -55,7 +57,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-etcd-discovery-spi</artifactId>
-        <version>1.0-RC1</version>
+        <version>1.0-RC2</version>
     </dependency>
 </dependencies>
 
@@ -162,11 +164,44 @@ It may also help you to understand the functionality by checking out and running
 located at [src/test/java](src/test/java). **BE SURE TO READ** the comments as some of the tests require
 you to setup your local Etcd and edit certain files.
 
+From the command line you can run `TestExplicitIpPortRegistrator` and `TestLocalDiscoveryNodeRegistrator` unit-tests by invoking the `runTests` task using `gradlew` that runs both tests and displays the result on the console.
+
+```
+$ ./gradlew runTests
+```
+
+The task above will display output indicating the test has started and whether the test has passed or failed.
+
+###### Sample output for passing test:
+```
+org.bitsofinfo.hazelcast.discovery.etcd.TestExplicitIpPortRegistrator > testExplicitIpPortRegistrator STARTED
+
+org.bitsofinfo.hazelcast.discovery.etcd.TestExplicitIpPortRegistrator > testExplicitIpPortRegistrator PASSED
+```
+
+###### Sample output for failing test:
+```
+org.bitsofinfo.hazelcast.discovery.etcd.TestDoNothingRegistrator > testDoNothingRegistrator STARTED
+
+org.bitsofinfo.hazelcast.discovery.etcd.TestDoNothingRegistrator > testDoNothingRegistrator FAILED
+    java.lang.AssertionError at TestDoNothingRegistrator.java:85
+```
+
+To run individual unit-test, use the `test.single` argument to provide the unit-test you would like to run. The command below runs the unit test for `TestDoNothingRegistrator`
+
+```
+$ ./gradlew test -Dtest.single=TestDoNothingRegistrator
+```
+
+##### Note on running `TestDoNothingRegistrator` unit-test
+The `TestDoNothingRegistrator` unit-test should be run separately using the `test.single` argument as demonstrated above as it requires you to register a service with your local etcd with 5 nodes/instances. Please **CAREFULLY READ** the comments in `TestDoNothingRegistrator.java` to see how this test should be run.
+
+
 ## <a id="related"></a>Related info
 
 * https://github.com/coreos/etcd
 * https://github.com/jurmous/etcd4j
-* http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#discovery-spi
+* http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#discovery-spi
 * **Consul** version of this: https://github.com/bitsofinfo/hazelcast-consul-discovery-spi
 
 ## <a id="notes"></a> Notes
@@ -178,7 +213,7 @@ that would need to automatically register themselves with Etcd for higher level 
 
 If you are deploying your Hazelcast application as a Docker container, one helpful tip is that you will want to avoid hardwired
 configuration in the hazelcast XML config, but rather have your Docker container take startup arguments that would be translated
-to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6-RC1/manual/html-single/index.html#using-variables) 
+to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables) 
 
 Specifically when using this discovery strategy and Docker, it may be useful for you to use the [ExplicitIpPortRegistrator](src/main/java/org/bitsofinfo/hazelcast/discovery/etcd/ExplicitIpPortRegistrator.java) `EtcdRegistrator` **instead** of the *LocalDiscoveryNodeRegistrator* as the latter relies on hazelcast to determine its IP/PORT and this may end up being the local container IP, and not the Docker host IP, leading to a situation where a unreachable IP/PORT combination is published to Etcd.
 
