@@ -24,7 +24,7 @@ public class DoNothingRegistrator implements EtcdRegistrator {
 	}
 
 	@Override
-	public void init(List<URI> etcdUris, String etcdServiceName, DiscoveryNode localDiscoveryNode,
+	public void init(List<URI> etcdUris, String etcdUsername, String etcdPassword, String etcdServiceName, DiscoveryNode localDiscoveryNode,
 			Map<String, Object> registratorConfig, ILogger logger) {
 
 	}

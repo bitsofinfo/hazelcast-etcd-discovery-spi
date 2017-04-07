@@ -27,6 +27,8 @@ public interface EtcdRegistrator {
 	 * Initialize the registrator
 	 * 
 	 * @param etcdUris
+	 * @param etcdUsername
+	 * @param etcdPassword
 	 * @param etcdServiceName
 	 * @param localDiscoveryNode
 	 * @param registratorConfig
@@ -34,6 +36,8 @@ public interface EtcdRegistrator {
 	 * @throws Exception
 	 */
 	public void init(List<URI> etcUris,
+	                 String etcdUsername,
+	                 String etcdPassword,
 			         String etcdServiceName,
 			         DiscoveryNode localDiscoveryNode,
 			         Map<String, Object> registratorConfig,
