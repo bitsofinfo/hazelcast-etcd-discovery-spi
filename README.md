@@ -118,6 +118,10 @@ dependencies {
 
          <properties>
               <property name="etcd-uris">http://localhost:4001</property>
+              <!-- Optional Username for etcd -->
+              <property name="etcd-username">root</property>
+              <!-- Optional Password for etcd -->
+              <property name="etcd-password">password</property>
 		      <property name="etcd-service-name">hz-discovery-test-cluster</property>
               <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.LocalDiscoveryNodeRegistrator</property>
 		      <property name="etcd-registrator-config"><![CDATA[

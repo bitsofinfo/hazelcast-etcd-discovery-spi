@@ -41,6 +41,19 @@
                           	= value { ip:xx.xx.xx.xx, hostname:my.host, port: xx, ...}
                        -->
                       <property name="etcd-service-name">hz-discovery-test-cluster</property>
+                      
+                      
+                      <!-- 
+                         An optional username to connect to etcd.  
+                      
+                      <property name="etcd-username">root</property>
+                      -->
+                      
+                      <!-- 
+                         An optional password for the above username if one is setup for etcd.
+                      
+                      <property name="etcd-password">password</property>
+                      -->
                                             
                       <!--  
                               If you quickly start an entire hz cluster at the exact same time, and

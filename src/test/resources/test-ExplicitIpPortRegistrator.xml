@@ -21,7 +21,7 @@
     </properties>
 
     <network>
-        <port auto-increment="true">5701</port>
+        <port auto-increment="true">5801</port>
         
         <join>
             <multicast enabled="false"/>

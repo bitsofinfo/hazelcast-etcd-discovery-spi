@@ -28,7 +28,7 @@ public class TestExplicitIpPortRegistrator extends RegistratorTestBase {
 		
 		// these variables are subsituted for the ${vars} in the hazelcast config XML 
 		System.setProperty("registerWithIp", ip);
-		System.setProperty("registerWithPort","570"+(instanceNumber+1)); // start at 5701 - 5705
+		System.setProperty("registerWithPort","580"+(instanceNumber+1)); // start at 5801 - 5805
 		
 	}
 	
