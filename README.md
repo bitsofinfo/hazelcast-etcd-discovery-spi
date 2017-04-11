@@ -1,5 +1,7 @@
 # hazelcast-etcd-discovery-spi
 
+*IMPORTANT*: This README is relevant for the current *branch* you have selected above.
+
 Provides a Etcd based discovery strategy for Hazlecast 3.6+ enabled applications.
 This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will optionally register each of your Hazelcast instances with Etcd and enable Hazelcast nodes to dynamically discover one another via Etcd.
 
