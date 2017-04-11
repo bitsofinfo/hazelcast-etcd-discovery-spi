@@ -34,6 +34,8 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 	// how we connect to etcd
 	private String etcdUrisString;  
 	private List<URI> etcdUris = new ArrayList<URI>();
+	private String etcdUsername;
+	private String etcdPassword;
 	
 	// service name we will key under
 	private String etcdServiceName = null;
@@ -55,6 +57,8 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 		
 		// get basic properites for the strategy
 		this.etcdUrisString = getOrDefault("etcd-uris",  EtcdDiscoveryConfiguration.ETCD_URIS, "http://localhost:4001");
+		this.etcdUsername = getOrDefault("etcd-username", EtcdDiscoveryConfiguration.ETCD_USERNAME, null);
+		this.etcdPassword = getOrDefault("etcd-password", EtcdDiscoveryConfiguration.ETCD_PASSWORD, null);
 		this.etcdServiceName = getOrDefault("etcd-service-name",  EtcdDiscoveryConfiguration.ETCD_SERVICE_NAME, "");		
 		long discoveryDelayMS = getOrDefault("etcd-discovery-delay-ms",  EtcdDiscoveryConfiguration.ETCD_DISCOVERY_DELAY_MS, 30000);
 		
@@ -101,7 +105,7 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 			
 			logger.info("Using EtcdRegistrator: " + registratorClassName);
 			
-			registrator.init(etcdUris, etcdServiceName, localDiscoveryNode, registratorConfig, logger);;
+			registrator.init(etcdUris, etcdUsername, etcdPassword, etcdServiceName, localDiscoveryNode, registratorConfig, logger);;
 			registrator.register();
 			
 		} catch(Exception e) {
@@ -120,18 +124,18 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 			logger.severe("Unexpected error sleeping prior to discovery: " + e.getMessage(),e);
 		}
 									
-	}      
-	
-	protected static EtcdClient getEtcdClient(List<URI> etcdUris) throws Exception {
-		// build our clients 
-		
-		if (etcdUris.iterator().next().toString().toLowerCase().indexOf("https") != -1) {
-			SslContext sslContext = SslContext.newClientContext();
-			return new EtcdClient(sslContext,etcdUris.toArray(new URI[]{}));
-		} else {
-			return new EtcdClient(etcdUris.toArray(new URI[]{}));
-		}
 	}
+	
+	protected static EtcdClient getEtcdClient(List<URI> etcdUris, String username, String password) throws Exception {
+        // build our clients 
+        
+        if (etcdUris.iterator().next().toString().toLowerCase().indexOf("https") != -1) {
+            SslContext sslContext = SslContext.newClientContext();
+            return new EtcdClient(sslContext, username, password, etcdUris.toArray(new URI[]{}));
+        } else {
+            return new EtcdClient(username, password, etcdUris.toArray(new URI[]{}));
+        }
+    }
 
 	@Override
 	public Iterable<DiscoveryNode> discoverNodes() {
@@ -141,7 +145,7 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 		EtcdClient etcdClient = null;
 		
 		try {
-			etcdClient = getEtcdClient(this.etcdUris);
+			etcdClient = getEtcdClient(this.etcdUris, this.etcdUsername, this.etcdPassword);
 			
 			Gson gson = new GsonBuilder().setDateFormat(DATE_PATTERN).create();
 			

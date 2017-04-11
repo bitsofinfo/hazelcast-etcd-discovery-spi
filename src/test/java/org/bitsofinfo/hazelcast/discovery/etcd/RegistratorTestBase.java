@@ -33,8 +33,12 @@ public abstract class RegistratorTestBase {
 	public static final int ETCD_PORT = 4001;
 	
 	protected abstract void preConstructHazelcast(int instanceNumber) throws Exception;
-
+	
 	protected void testRegistrator(String hazelcastConfigXmlFilename, String serviceName) {
+	    testRegistrator(hazelcastConfigXmlFilename, serviceName, null, null);
+	}
+
+	protected void testRegistrator(String hazelcastConfigXmlFilename, String serviceName, String username, String password) {
 		EtcdClient etcdClient = null;
 		
 		try {
@@ -48,7 +52,7 @@ public abstract class RegistratorTestBase {
 			System.out.println("#################### IS ETCD RUNNING @ " +
 					ETCD_HOST+":"+ETCD_PORT+"? IF NOT THIS TEST WILL FAIL! ####################");
 			
-			etcdClient = new EtcdClient(new URI("http://"+ETCD_HOST+":"+ETCD_PORT));
+			etcdClient = new EtcdClient(username, password, new URI("http://"+ETCD_HOST+":"+ETCD_PORT));
 
 			for (int i=0; i<totalInstancesToTest; i++) {
 				

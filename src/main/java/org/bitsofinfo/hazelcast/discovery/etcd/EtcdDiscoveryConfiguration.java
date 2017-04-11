@@ -15,6 +15,12 @@ public class EtcdDiscoveryConfiguration {
 	public static final PropertyDefinition ETCD_URIS = 
 			new SimplePropertyDefinition("etcd-uris", PropertyTypeConverter.STRING);
 	
+	public static final PropertyDefinition ETCD_USERNAME = 
+	        new SimplePropertyDefinition("etcd-username", true, PropertyTypeConverter.STRING);
+	
+	public static final PropertyDefinition ETCD_PASSWORD =
+	        new SimplePropertyDefinition("etcd-password", true, PropertyTypeConverter.STRING);
+	
 	public static final PropertyDefinition ETCD_SERVICE_NAME = 
 			new SimplePropertyDefinition("etcd-service-name", PropertyTypeConverter.STRING);
 	

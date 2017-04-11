@@ -39,6 +39,8 @@ public abstract class BaseRegistrator implements EtcdRegistrator {
 	
 	protected ILogger logger = null;
 	protected Address myLocalAddress = null;
+	protected String etcdUsername = null;
+	protected String etcdPassword = null;
 	protected String etcdServiceName = null;
 	protected String etcdUriStrings = null;
 	protected List<URI> etcdUris = new ArrayList<URI>();
@@ -51,12 +53,16 @@ public abstract class BaseRegistrator implements EtcdRegistrator {
 
 	@Override
 	public void init(List<URI> etcdUris,
+	                 String etcdUsername,
+	                 String etcdPassword,
 			         String etcdServiceName,
 			         DiscoveryNode localDiscoveryNode,
 			         Map<String, Object> registratorConfig,
 			         ILogger logger) throws Exception {
 		
 		this.logger = logger;
+		this.etcdUsername = etcdUsername;
+		this.etcdPassword = etcdPassword;
 		this.etcdServiceName = etcdServiceName;
 		this.etcdUris = etcdUris;
 
@@ -88,7 +94,7 @@ public abstract class BaseRegistrator implements EtcdRegistrator {
 		try {
 			
 			// create our client
-			etcdClient = EtcdDiscoveryStrategy.getEtcdClient(etcdUris);
+			etcdClient = EtcdDiscoveryStrategy.getEtcdClient(etcdUris, etcdUsername, etcdPassword);
 			
 			// generate service id
 			this.myServiceId = this.etcdServiceName + "-" + 
@@ -126,7 +132,7 @@ public abstract class BaseRegistrator implements EtcdRegistrator {
 		
 		try {
 			// create our client
-			etcdClient = EtcdDiscoveryStrategy.getEtcdClient(etcdUris);
+			etcdClient = EtcdDiscoveryStrategy.getEtcdClient(etcdUris, etcdUsername, etcdPassword);
 			
 			// delete
 			etcdClient.delete(this.myEtcdKey).send().get();
