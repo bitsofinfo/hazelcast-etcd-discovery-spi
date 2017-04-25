@@ -26,6 +26,8 @@ This is beta code, tested against Hazelcast 3.6-EA+ through 3.6 stable
 
 ## <a id="releases"></a>Releases
 
+* [1.0-RC3](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC3): Tested against Hazelcast 3.6-EA through 3.6 stable, add support for username and password for [issue #1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/issues/1)
+
 * [1.0-RC2](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC2): Tested against Hazelcast 3.6-EA through 3.6 stable
 
 * [1.0-RC1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC1): Tested against Hazelcast 3.6-EA and 3.6-RC1
@@ -48,7 +50,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC2'
+	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC3'
 }
 ```
 
@@ -59,7 +61,7 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-etcd-discovery-spi</artifactId>
-        <version>1.0-RC2</version>
+        <version>1.0-RC3</version>
     </dependency>
 </dependencies>
 

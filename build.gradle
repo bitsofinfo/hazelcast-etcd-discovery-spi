@@ -24,7 +24,7 @@ targetCompatibility = 1.6
 
 dependencies {
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6'
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6+'
     compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
     
