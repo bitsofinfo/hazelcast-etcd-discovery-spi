@@ -20,7 +20,10 @@ public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
 						EtcdDiscoveryConfiguration.ETCD_SERVICE_NAME,
 						EtcdDiscoveryConfiguration.ETCD_REGISTRATOR,
 						EtcdDiscoveryConfiguration.ETCD_REGISTRATOR_CONFIG,
-						EtcdDiscoveryConfiguration.ETCD_DISCOVERY_DELAY_MS
+						EtcdDiscoveryConfiguration.ETCD_DISCOVERY_DELAY_MS,
+						EtcdDiscoveryConfiguration.ETCD_CLIENT_CERT_LOCATION,
+						EtcdDiscoveryConfiguration.ETCD_CLIENT_KEY_LOCATION,
+						EtcdDiscoveryConfiguration.ETCD_TRUSTED_CERT_LOCATION
 					});
 
 	public Class<? extends DiscoveryStrategy> getDiscoveryStrategyType() {

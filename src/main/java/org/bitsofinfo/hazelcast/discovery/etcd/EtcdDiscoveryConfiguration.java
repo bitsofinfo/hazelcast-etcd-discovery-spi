@@ -32,6 +32,15 @@ public class EtcdDiscoveryConfiguration {
 	
 	public static final PropertyDefinition ETCD_DISCOVERY_DELAY_MS = 
 			new SimplePropertyDefinition("etcd-discovery-delay-ms", PropertyTypeConverter.INTEGER);
+
+	public static final PropertyDefinition ETCD_CLIENT_CERT_LOCATION = 
+			new SimplePropertyDefinition("etcd-client-cert-location", true, PropertyTypeConverter.STRING);
+
+	public static final PropertyDefinition ETCD_CLIENT_KEY_LOCATION =
+			new SimplePropertyDefinition("etcd-client-key-location", true, PropertyTypeConverter.STRING);
+
+	public static final PropertyDefinition ETCD_TRUSTED_CERT_LOCATION = 
+			new SimplePropertyDefinition("etcd-trusted-cert-location", true, PropertyTypeConverter.STRING);
 	
 
 }
