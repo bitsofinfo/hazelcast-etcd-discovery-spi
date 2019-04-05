@@ -17,6 +17,7 @@ import java.security.cert.CertificateFactory;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -249,7 +250,8 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 
 	private static KeyStore readCertsAndCreateKeyStore(String clientCertLocation, String clientKeyLocation, String trustedCertsLocation) throws ConfigurationException {
 		
-		if(clientCertLocation == null || clientCertLocation.isEmpty() || clientKeyLocation == null || clientKeyLocation.isEmpty()) {
+		if((clientCertLocation == null || clientCertLocation.isEmpty()) && (clientKeyLocation == null || clientKeyLocation.isEmpty()) &&
+			trustedCertsLocation == null || trustedCertsLocation.isEmpty()) {
 			return null;
 		}
 		
@@ -291,22 +293,40 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 			PrivateKey privateKey = loadPrivateKey(clientKey);
 
 			if (trustedCerts == null) {
-				List<Certificate> chainedCerts = loadChainedCertificate(clientCert);
-				for (int i = 1; i < chainedCerts.size(); i++) {
-					keyStore.setCertificateEntry("ca-cert-" + i, chainedCerts.get(i));
+				if(clientCert != null) {
+					//chained cert and trusted certs
+					List<Certificate> chainedCerts = loadChainedCertificate(clientCert);
+					if(chainedCerts.size() > 1) {
+						for (int i = 1; i < chainedCerts.size(); i++) {
+							keyStore.setCertificateEntry("ca-cert-" + i, chainedCerts.get(i));
+						}
+					}
+					keyStore.setCertificateEntry("client-cert", chainedCerts.get(0));
+					//private key
+					if(privateKey != null) {
+						keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(),
+								new Certificate[] { chainedCerts.get(0) });
+					}
 				}
-				keyStore.setCertificateEntry("client-cert", chainedCerts.get(0));
-				keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(),
-						new Certificate[] { chainedCerts.get(0) });
 			} else {
-				Certificate clientCertificate = loadCertificate(clientCert);
-				List<Certificate> caCertificates = loadChainedCertificate(trustedCerts);
-				for (int i = 0; i < caCertificates.size(); i++) {
-					keyStore.setCertificateEntry("ca-cert-" + i, caCertificates.get(i));
+				//trusted certs
+				if(trustedCerts != null) {
+					List<Certificate> caCertificates = loadChainedCertificate(trustedCerts);
+					for (int i = 0; i < caCertificates.size(); i++) {
+						keyStore.setCertificateEntry("ca-cert-" + i, caCertificates.get(i));
+					}
 				}
-				keyStore.setCertificateEntry("client-cert", clientCertificate);
-				keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(),
-						new Certificate[] { clientCertificate });
+				//cert
+				if(clientCert != null) {
+					Certificate clientCertificate = loadCertificate(clientCert);
+					keyStore.setCertificateEntry("client-cert", clientCertificate);
+					
+					//key
+					if(privateKey != null) {
+						keyStore.setKeyEntry("client-key", privateKey, TEMPORARY_KEY_PASSWORD.toCharArray(),
+								new Certificate[] { clientCertificate });
+					}
+				}
 			}
 			return keyStore;
 		} catch (GeneralSecurityException | IOException e) {
@@ -318,6 +338,11 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 
 	
 	private static List<Certificate> loadChainedCertificate(String clientCerts) throws GeneralSecurityException {
+		
+		if (clientCerts == null) {
+			return null;
+		}
+		
 		String beginDelimiter = "-----BEGIN CERTIFICATE-----";
 		String endDelimiter = "-----END CERTIFICATE-----";
 		CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
@@ -342,6 +367,11 @@ public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy implements 
 	}
 
 	private static PrivateKey loadPrivateKey(String privateKeyPem) throws IOException, GeneralSecurityException {
+		
+		if(privateKeyPem == null || privateKeyPem.isEmpty()) {
+			return null;
+		}
+		
 		// PKCS#8 format
 	    final String PEM_PRIVATE_START = "-----BEGIN PRIVATE KEY-----";
 	    final String PEM_PRIVATE_END = "-----END PRIVATE KEY-----";

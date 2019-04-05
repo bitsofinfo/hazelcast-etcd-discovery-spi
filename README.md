@@ -126,9 +126,13 @@ dependencies {
               <property name="etcd-username">root</property>
               <!-- Optional Password for etcd -->
               <property name="etcd-password">password</property>
-		      <property name="etcd-service-name">hz-discovery-test-cluster</property>
+		       <property name="etcd-service-name">hz-discovery-test-cluster</property>
               <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.LocalDiscoveryNodeRegistrator</property>
-		      <property name="etcd-registrator-config"><![CDATA[
+              <!-- Optional cert/key files for SSL connection to etcd, in case etcd is configured for secure communication -->
+              <property name="etcd-client-cert-location">/path/to/tls.crt</property>
+              <property name="etcd-client-key-location">/path/to/tls.key</property>
+              <property name="etcd-trusted-cert-location">/path/to/trusted.crt</property>
+		       <property name="etcd-registrator-config"><![CDATA[
 					{
 					  "preferPublicAddress":false
 					}
