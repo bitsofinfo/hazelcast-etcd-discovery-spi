@@ -107,6 +107,19 @@ dependencies {
 
 * Launch your hazelcast instances, configured with the Etcd discovery-strategy similar to the below: [see ManualRunner.java](src/test/java/org/bitsofinfo/hazelcast/discovery/etcd/ManualRunner.java) example.
 
+
+## <a id="Secured Communication"></a>Secured Communication
+
+By default, when the HTTPS protocol is defined in order to communicate with ETCD the standard SSLContext is used (usually using 'cacerts' system keystore, if not set otherwise). If you need to define your own
+SSLContext with custom certificates there are three optional parameters for defining input for a custom SSLContext in order to establish secure communication to ETCD.
+
+The optional security properties provide locations of certificates (and keys) for secure communication. You can configure trusted root certificates that are needed for communication with ETCD, when secure communication is enabled for your ETCD instance. You can also provide a client certificate and a private key through 'etcd-client-cert-location' and 'etcd-client-key-location' in case your ETCD has client-authentication activated and requests a client certificate.
+                      
+In case your root certificates and client certificate are chained in one file it is OK to define this file in 'etcd-client-cert-location' and omit the trusted-cert property. The implementation will extract the first certificate as your client certificate and the rest as the trusted root/intermediate certificates. 
+                      
+Certificates should be X509 and provided in a PEM encoded file. Keys can be provided as PKCS#8 or PKCS#1 in a PEM encoded file.
+
+
 ```
 <network>
   <port auto-increment="true">5701</port>
@@ -126,9 +139,13 @@ dependencies {
               <property name="etcd-username">root</property>
               <!-- Optional Password for etcd -->
               <property name="etcd-password">password</property>
-		      <property name="etcd-service-name">hz-discovery-test-cluster</property>
+		       <property name="etcd-service-name">hz-discovery-test-cluster</property>
               <property name="etcd-registrator">org.bitsofinfo.hazelcast.discovery.etcd.LocalDiscoveryNodeRegistrator</property>
-		      <property name="etcd-registrator-config"><![CDATA[
+              <!-- Optional cert/key files for SSL connection to etcd, in case etcd is configured for secure communication -->
+              <property name="etcd-client-cert-location">/path/to/tls.crt</property>
+              <property name="etcd-client-key-location">/path/to/tls.key</property>
+              <property name="etcd-trusted-cert-location">/path/to/trusted.crt</property>
+		       <property name="etcd-registrator-config"><![CDATA[
 					{
 					  "preferPublicAddress":false
 					}
