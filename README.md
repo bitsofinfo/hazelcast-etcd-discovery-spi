@@ -26,6 +26,8 @@ This is beta code, tested against Hazelcast 3.6-EA+ through 3.6 stable
 
 ## <a id="releases"></a>Releases
 
+* [1.0-RC4](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC4): Java 1.7+. SSL cert file improvements [pull/5](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/pull/5)
+
 * [1.0-RC3](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC3): Tested against Hazelcast 3.6-EA through 3.6 stable, add support for username and password for [issue #1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/issues/1)
 
 * [1.0-RC2](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC2): Tested against Hazelcast 3.6-EA through 3.6 stable
@@ -34,7 +36,7 @@ This is beta code, tested against Hazelcast 3.6-EA+ through 3.6 stable
 
 ## <a id="requirements"></a>Requirements
 
-* Java 6+
+* Java 7+
 * [Hazelcast 3.6+](https://hazelcast.org/)
 * [Etcd](https://github.com/coreos/etcd)
 
@@ -46,7 +48,7 @@ To use this discovery strategy in your Maven or Gradle project use the dependenc
 
 ```
 repositories {
-    jcenter() 
+    jcenter()
 }
 
 dependencies {
@@ -85,7 +87,7 @@ dependencies {
 	* **Read-only**: peer discovery only with an manual Etcd key-path setup (no registration by the strategy itself)
 
 * If you don't want to use the built in Etcd registration, just specify the `DoNothingRegistrator` (see below) in your hazelcast discovery-strategy XML config. This will require you to manually create node key-paths against Etcd that defines the hazelcast service; in the format:
-	* `/[etcd-service-name]/[hz-instance-id] = {"ip":"xx.xx.xx.xx", "hostname":"my.host", "port":5701}` where `hz-instance-id` can be anything but must be unique. 
+	* `/[etcd-service-name]/[hz-instance-id] = {"ip":"xx.xx.xx.xx", "hostname":"my.host", "port":5701}` where `hz-instance-id` can be anything but must be unique.
 	* `etcd-service-name` must match the value of the `<etcd-service-name>` in your hazelcast XML config for this discovery strategy.
 
 * If using self-registration, either `LocalDiscoveryNodeRegistrator` or `ExplicitIpPortRegistrator` which additionally support:
@@ -93,7 +95,7 @@ dependencies {
     * Control which IP/PORT is published for the hazelcast node in Etcd
     * Configurable discovery delay
     * Automatic Etcd de-registration of instance via ShutdownHook
-    
+
 ## <a id="usage"></a>Usage
 
 * Ensure your project has the `hazelcast-etcd-discovery-spi` artifact dependency declared in your maven pom or gradle build file as described above. Or build the jar yourself and ensure the jar is in your project's classpath.
@@ -114,9 +116,9 @@ By default, when the HTTPS protocol is defined in order to communicate with ETCD
 SSLContext with custom certificates there are three optional parameters for defining input for a custom SSLContext in order to establish secure communication to ETCD.
 
 The optional security properties provide locations of certificates (and keys) for secure communication. You can configure trusted root certificates that are needed for communication with ETCD, when secure communication is enabled for your ETCD instance. You can also provide a client certificate and a private key through 'etcd-client-cert-location' and 'etcd-client-key-location' in case your ETCD has client-authentication activated and requests a client certificate.
-                      
-In case your root certificates and client certificate are chained in one file it is OK to define this file in 'etcd-client-cert-location' and omit the trusted-cert property. The implementation will extract the first certificate as your client certificate and the rest as the trusted root/intermediate certificates. 
-                      
+
+In case your root certificates and client certificate are chained in one file it is OK to define this file in 'etcd-client-cert-location' and omit the trusted-cert property. The implementation will extract the first certificate as your client certificate and the rest as the trusted root/intermediate certificates.
+
 Certificates should be X509 and provided in a PEM encoded file. Keys can be provided as PKCS#8 or PKCS#1 in a PEM encoded file.
 
 
@@ -180,7 +182,7 @@ $ ./etcdctl get /hz-discovery-test-cluster/hz-discovery-test-cluster-192.168.0.2
 ```
 compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
 compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
-``` 
+```
 
 
 ## <a id="tests"></a>Unit-tests
@@ -240,21 +242,21 @@ that would need to automatically register themselves with Etcd for higher level 
 
 If you are deploying your Hazelcast application as a Docker container, one helpful tip is that you will want to avoid hardwired
 configuration in the hazelcast XML config, but rather have your Docker container take startup arguments that would be translated
-to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables) 
+to `-D` system properties on startup. Convienently Hazelcast can consume these JVM system properties and replace variable placeholders in the XML config. See this documentation for examples: [http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables](http://docs.hazelcast.org/docs/3.6/manual/html-single/index.html#using-variables)
 
 Specifically when using this discovery strategy and Docker, it may be useful for you to use the [ExplicitIpPortRegistrator](src/main/java/org/bitsofinfo/hazelcast/discovery/etcd/ExplicitIpPortRegistrator.java) `EtcdRegistrator` **instead** of the *LocalDiscoveryNodeRegistrator* as the latter relies on hazelcast to determine its IP/PORT and this may end up being the local container IP, and not the Docker host IP, leading to a situation where a unreachable IP/PORT combination is published to Etcd.
 
 **Example:** excerpt from [explicitIpPortRegistrator-example.xml](src/main/resources/explicitIpPortRegistrator-example.xml)
- 
+
 Start your hazelcast app such as with the below, this would assume that hazelcast is actually reachable via this configuration
-via your Docker host and the port mappings that were specified on `docker run`. (i.e. the IP below would be your docker host/port that is mapped to the actual hazelcast app container and port it exposes for hazelcast). 
+via your Docker host and the port mappings that were specified on `docker run`. (i.e. the IP below would be your docker host/port that is mapped to the actual hazelcast app container and port it exposes for hazelcast).
 
 This library may also be helpful to you: [docker-discovery-registrator-consul](https://github.com/bitsofinfo/docker-discovery-registrator-consul)
 
-See this [Docker issue for related info](https://github.com/docker/docker/issues/3778) on detecting mapped ports/ip from **within** a container	
+See this [Docker issue for related info](https://github.com/docker/docker/issues/3778) on detecting mapped ports/ip from **within** a container
 
 `java -jar myHzApp.jar -DregisterWithIpAddress=<dockerHostIp> -DregisterWithPort=<mappedContainerPortOnDockerHost> .... `
- 
+
 ```
 <property name="etcd-registrator-config"><![CDATA[
       {
@@ -263,4 +265,3 @@ See this [Docker issue for related info](https://github.com/docker/docker/issues
       }
   ]]></property>
 ```
-

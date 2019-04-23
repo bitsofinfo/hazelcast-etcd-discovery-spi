@@ -19,8 +19,8 @@ allprojects {
 	apply plugin: 'java'
 }
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencies {
 
@@ -30,14 +30,14 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.60'
     compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.60'
-    
+
     testCompile 'junit:junit:4.12'
 }
 
 bintray {
 	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('bintrayUser')
 	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('bintrayApiKey')
-    publications = ['hazelcastEtcdDiscoverySpi'] 
+    publications = ['hazelcastEtcdDiscoverySpi']
     pkg {
         repo = 'maven'
         name = 'hazelcast-etcd-discovery-spi'
@@ -60,7 +60,7 @@ publishing {
             groupId project.property('group')
             artifactId 'hazelcast-etcd-discovery-spi'
             version project.property('version')
-            
+
             artifact sourcesJar
         }
     }
@@ -74,13 +74,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 task runTests(type: Test) {
 	description 'Runs unit tests for all tests except TestDoNothingRegistrator.'
-  	
-  	//Always run tests even when up-to-date 
-  	outputs.upToDateWhen { 
-  		false 
+
+  	//Always run tests even when up-to-date
+  	outputs.upToDateWhen {
+  		false
   	}
-	
-	//Exclude TestDoNothingRegistrator test because it requires special setup 
+
+	//Exclude TestDoNothingRegistrator test because it requires special setup
     exclude "**/TestDoNothingRegistrator.class"
 }
 
@@ -94,7 +94,3 @@ runTests {
 artifacts {
     archives sourcesJar
 }
-    
-    
-
-
