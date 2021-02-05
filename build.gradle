@@ -1,6 +1,6 @@
 buildscript {
 	repositories {
-    	jcenter()
+    	mavenCentral()
     }
 }
 
@@ -24,7 +24,7 @@ targetCompatibility = 1.7
 
 dependencies {
 
-    compile group: 'com.hazelcast', name: 'hazelcast', version:'3.6+'
+    compile group: 'com.hazelcast', name: 'hazelcast', version:'[3.6,3.12]'
     compile group: 'org.mousio', name: 'etcd4j', version:'2.9.0'
     compile group: 'com.google.code.gson', name: 'gson', version:'2.4'
     compile 'commons-io:commons-io:2.4'
@@ -57,11 +57,34 @@ publishing {
     publications {
         hazelcastEtcdDiscoverySpi(MavenPublication) {
             from components.java
+
             groupId project.property('group')
             artifactId 'hazelcast-etcd-discovery-spi'
             version project.property('version')
 
             artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                asNode().appendNode('name', project.property('group')+":hazelcast-etcd-discovery-spi")
+                asNode().appendNode('description', project.property('description'))
+                asNode().appendNode('url', "https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi")
+                asNode().appendNode('packaging', "jar")
+                asNode().appendNode('licenses').appendNode('license')
+                    .appendNode('name', "The Apache License, Version 2.0").parent()
+                    .appendNode('url', "http://www.apache.org/licenses/LICENSE-2.0.txt")
+                asNode().appendNode('developers').appendNode('developer')
+                    .appendNode('id', "bitsofinfo").parent()
+                    .appendNode('name', "bitsofinfo").parent()
+                    .appendNode('email', "bitsofinfo.g@gmail.com").parent()
+                    .appendNode('organization',"bitsofinfo").parent()
+                    .appendNode('organizationUrl','https://github.com/bitsofinfo')
+                asNode().appendNode('scm')
+                    .appendNode('connection', "scm:git:https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi.git").parent()
+                    .appendNode('developerConnection', "scm:git:https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi.git").parent()
+                    .appendNode('url', "https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi")   
+            }
+
         }
     }
 }
@@ -69,6 +92,17 @@ publishing {
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+
+task javadocJar(type: Jar, dependsOn: 'javadoc') {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 
@@ -89,8 +123,4 @@ runTests {
         // Show that tests are run in the command-line output
         events 'started', 'passed'
     }
-}
-
-artifacts {
-    archives sourcesJar
 }

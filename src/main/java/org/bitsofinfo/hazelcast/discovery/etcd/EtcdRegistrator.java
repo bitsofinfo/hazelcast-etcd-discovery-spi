@@ -26,7 +26,7 @@ public interface EtcdRegistrator {
 	/**
 	 * Initialize the registrator
 	 * 
-	 * @param etcdUris
+	 * @param etcUris
 	 * @param etcdUsername
 	 * @param etcdPassword
 	 * @param etcdServiceName

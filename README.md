@@ -24,8 +24,12 @@ This is an easy to configure plug-and-play Hazlecast DiscoveryStrategy that will
 
 This is beta code, tested against Hazelcast 3.6-EA+ through 3.6 stable
 
+**IMPORTANT: TAG: 1.0-RC4-20210205**: All tags prior to this might not end up in maven central. However this tag is a re-publish of 1.0-RC4 to be made available in Maven Central due to the sunset of Bintray/JCenter in 2021
+
 ## <a id="releases"></a>Releases
 
+* **1.0-RC4-20210205**: Same as `1.0-RC4` but made compliant for Maven Central due to JCenter/Bintray closure. Includes explicit dependency of HZ `[3.6,3.12]`
+  
 * [1.0-RC4](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC4): Java 1.7+. SSL cert file improvements [pull/5](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/pull/5)
 
 * [1.0-RC3](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/releases/tag/1.0-RC3): Tested against Hazelcast 3.6-EA through 3.6 stable, add support for username and password for [issue #1](https://github.com/bitsofinfo/hazelcast-etcd-discovery-spi/issues/1)
@@ -48,11 +52,11 @@ To use this discovery strategy in your Maven or Gradle project use the dependenc
 
 ```
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC3'
+	compile 'org.bitsofinfo:hazelcast-etcd-discovery-spi:1.0-RC4-20210205'
 }
 ```
 
@@ -63,20 +67,9 @@ dependencies {
     <dependency>
         <groupId>org.bitsofinfo</groupId>
         <artifactId>hazelcast-etcd-discovery-spi</artifactId>
-        <version>1.0-RC3</version>
+        <version>1.0-RC4-20210205</version>
     </dependency>
 </dependencies>
-
-<repositories>
-    <repository>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-        <id>central</id>
-        <name>bintray</name>
-        <url>http://jcenter.bintray.com</url>
-    </repository>
-</repositories>
 ```
 
 ## <a id="features"></a>Features
